@@ -1,12 +1,15 @@
 import React, { Component, StrictMode } from "react";
 import PersonList from './PersonList';
 import Person from './Person';
+import fetch from "cross-fetch";
 
 
 class Application extends Component {
 
     
     state = { 
+
+        apiKey: "",
 
         people: [
             <Person key="1" value="1" onSetAddress = {(e,v) =>this.handleSetAddress(e,v)}></Person>,
@@ -15,7 +18,10 @@ class Application extends Component {
           ],
         addresses: [
             "","",""
-        ]
+        ],
+
+        coords: [],
+
         
      }
 
@@ -50,9 +56,50 @@ class Application extends Component {
         });
       };
 
-    propChecker = () => {
-        let b = this.state.people
-        console.log(b[0]);
+    
+    stringParser = a => {
+
+        let b = a.split(" ");
+        let newString = "";
+
+        for (let i =0; i<b.length;i++){
+            newString += b[i] + "%20";
+        }
+
+        return newString.slice(0,-3);
+    }
+
+
+
+
+
+    async getCoords(link) {
+
+        const res = await fetch(link);
+        const data = await res.json();
+
+        return data['results'][0].geometry.location;
+    }
+
+
+    convertToCoords = async () => {
+
+        const all = this.state.addresses;
+        const url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+        const apiKey = this.state.apiKey;
+
+        let fullUrl;
+
+        let newCoords = [];
+        let a;
+
+        for (let i = 0; i<all.length;i++) {
+            fullUrl = url+all[i]+apiKey;
+            a = (await this.getCoords(fullUrl));
+            newCoords.push(a);
+        }
+
+        this.setState({coords:newCoords});
 
     }
 
@@ -65,7 +112,7 @@ class Application extends Component {
                 onAddPerson = {()=>this.handleAddPerson()}
                 onDeletePerson = {()=>this.handleDeletePerson()}></PersonList>
 
-                <button onClick={this.propChecker}>Calculate</button>
+                <div><button onClick={this.convertToCoords}>Calculate</button></div>
                 
             </div>
          );

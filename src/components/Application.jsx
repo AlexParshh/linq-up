@@ -9,7 +9,7 @@ class Application extends Component {
     
     state = { 
 
-        apiKey: "",
+        apiKey: "&key=AIzaSyAF6LzDWnCO0yQ3_xVfXMYicN6MqUFl4q0",
 
         people: [
             <Person key="1" value="1" onSetAddress = {(e,v) =>this.handleSetAddress(e,v)}></Person>,
@@ -21,6 +21,8 @@ class Application extends Component {
         ],
 
         coords: [],
+
+        midPoint: [],
 
         
      }
@@ -70,9 +72,6 @@ class Application extends Component {
     }
 
 
-
-
-
     async getCoords(link) {
 
         const res = await fetch(link);
@@ -103,6 +102,66 @@ class Application extends Component {
 
     }
 
+
+    findMidPoint = (coordsList) => {
+        
+        const formatter = (x) => {
+
+            //Converting from degrees to radians
+            let lat1 = x.lat*(Math.PI/180);
+            let lon1 = x.lng*(Math.PI/180);
+            //Converting to cartesian coords
+
+            let x1 = Math.cos(lat1) * Math.cos(lon1);
+            let y1 = Math.cos(lat1) * Math.sin(lon1);
+            let z1 = Math.sin(lat1);
+
+            return [x1,y1,z1];
+
+        }
+
+        let formatted = [];
+
+        for (let i of coordsList) {
+            formatted.push(formatter(i))
+        }
+
+        let tmp;
+        let newResult = [];
+
+        for (let i = 0; i<formatted.length;i++) {
+            tmp = 0
+            for (let j of formatted) {
+
+                tmp += j[i]
+            }
+
+            newResult.push(tmp/formatted.length)
+
+        }
+
+        //newResult is now in format[x,y,z]
+
+        let lon = Math.atan2(newResult[1],newResult[0]);
+        let hyp = Math.sqrt(((newResult[0])**2) + ((newResult[1])**2));
+        let lat = Math.atan2(newResult[2],hyp);
+
+        //converting back to degrees
+        lat = lat * (180/Math.PI);
+        lon = lon * (180/Math.PI);
+
+        return [lat,lon];
+
+    }
+
+    calculator = async () => {
+        await this.convertToCoords();
+        let midPoint = (await this.findMidPoint(this.state.coords));
+        this.setState({midPoint:midPoint});
+
+    }
+
+
     render() { 
         return ( 
             <div>
@@ -112,8 +171,9 @@ class Application extends Component {
                 onAddPerson = {()=>this.handleAddPerson()}
                 onDeletePerson = {()=>this.handleDeletePerson()}></PersonList>
 
-                <div><button onClick={this.convertToCoords}>Calculate</button></div>
-                
+                <div><button onClick={this.calculator}>Calculate</button></div>
+                <br/>
+                <div>{this.state.midPoint[0]}    {this.state.midPoint[1]}</div>
             </div>
          );
     }

@@ -3,7 +3,7 @@ import React, { Component } from "react";
 
 
 class Person extends Component {
-    state = {  }
+
     render() { 
         return ( 
 
@@ -11,7 +11,7 @@ class Person extends Component {
                     <h4>Person #{this.props.value}</h4>
                     <form>
                         <label htmlFor="">Address</label>
-                        <input type="text"/>
+                        <input type="text" onChange={(e) => this.props.onSetAddress(e.target.value,this.props.value)}/>
                         <br/>
                     </form>
                 </div>

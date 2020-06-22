@@ -35,6 +35,7 @@ class Application extends Component {
     }
 
     handleAddPerson = () => {
+        this.resetMidPoint();
         let newAddresses = [...this.state.addresses,""];
         this.setState({addresses:newAddresses});
         this.setState({
@@ -50,6 +51,7 @@ class Application extends Component {
       };
 
     handleDeletePerson = () => {
+        this.resetMidPoint();
         let newAddresses = this.state.addresses.slice(0,-1);
         this.setState({addresses:newAddresses});
         let people = this.state.people.slice(0, -1);
@@ -104,6 +106,29 @@ class Application extends Component {
 
 
     findMidPoint = (coordsList) => {
+
+        if (coordsList.length == 2) {
+
+            let lat1 = coordsList[0].lat*(Math.PI/180);
+            let lat2 = coordsList[1].lat*(Math.PI/180);
+            let lon1 = coordsList[0].lng*(Math.PI/180);
+            let lon2 = coordsList[1].lng*(Math.PI/180);
+
+
+            let bx = Math.cos(lat2) * Math.cos(lon2-lon1);
+            let by = Math.cos(lat2) * Math.sin(lon2-lon1);
+
+            let latMid = Math.atan2((Math.sin(lat1) + Math.sin(lat2)), Math.sqrt((Math.cos(lat1)+bx)**2)+(by**2));
+            let lonMid = lon1 + Math.atan2(by,(Math.cos(lat1)+bx));
+
+            return [latMid*(180/Math.PI),lonMid*(180/Math.PI)];
+
+        };
+
+
+
+
+        //Two or more addresses
         
         const formatter = (x) => {
 
@@ -126,6 +151,9 @@ class Application extends Component {
             formatted.push(formatter(i))
         }
 
+
+
+
         let tmp;
         let newResult = [];
 
@@ -139,6 +167,8 @@ class Application extends Component {
             newResult.push(tmp/formatted.length)
 
         }
+
+
 
         //newResult is now in format[x,y,z]
 
@@ -155,10 +185,17 @@ class Application extends Component {
     }
 
     calculator = async () => {
+        if (this.state.addresses.length < 2){
+            return null;
+        }
         await this.convertToCoords();
         let midPoint = (await this.findMidPoint(this.state.coords));
         this.setState({midPoint:midPoint});
 
+    }
+
+    resetMidPoint = () => {
+        this.setState({midPoint:[]})
     }
 
 

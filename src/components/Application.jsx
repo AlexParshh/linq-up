@@ -1,11 +1,8 @@
-import React, { Component, StrictMode } from "react";
+import React, { Component } from "react";
 import PersonList from "./PersonList";
 import Person from "./Person";
 import fetch from "cross-fetch";
 import MapContainer from "./Map";
-
-
-
 
 class Application extends Component {
   state = {
@@ -36,7 +33,6 @@ class Application extends Component {
 
     currentLocation: [],
   };
-
 
   handleSetAddress = (e, v) => {
     let newAddresses = this.state.addresses.slice();
@@ -73,6 +69,9 @@ class Application extends Component {
   };
 
   handleDeletePerson = () => {
+    let newcoords = this.state.coords.slice(0, -1);
+    this.setState({ coords: newcoords });
+
     this.resetMidPoint();
     let newAddresses = this.state.addresses.slice(0, -1);
     this.setState({ addresses: newAddresses });
@@ -105,7 +104,7 @@ class Application extends Component {
     const url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     const apiKey = this.state.apiKey;
 
-    let fullUrl;
+    let fullUrl; 
 
     let newCoords = [];
     let a;
@@ -207,26 +206,19 @@ class Application extends Component {
   };
 
   setCurrentLocation = () => {
-
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) =>{
+      navigator.geolocation.getCurrentPosition((position) => {
         const lattt = position.coords.latitude;
         const longgg = position.coords.longitude;
 
-        let newcoords = [lattt,longgg];
+        let newcoords = [lattt, longgg];
 
-        this.setState({currentLocation:newcoords});
-      }
-
-
-      )
-
+        this.setState({ currentLocation: newcoords });
+      });
     }
-
-  }
+  };
 
   render() {
-    
     return (
       <div>
         {this.setCurrentLocation()}

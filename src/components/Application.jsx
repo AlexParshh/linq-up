@@ -218,10 +218,13 @@ class Application extends Component {
     }
   };
 
+  componentDidMount() {
+    this.setCurrentLocation()
+  }
+
   render() {
     return (
       <div>
-        {this.setCurrentLocation()}
         <h1>Linq</h1>
         <PersonList
           people={this.state.people}
@@ -237,6 +240,7 @@ class Application extends Component {
 
         <div>
           <MapContainer
+            addresses={this.state.addresses}
             currentLocation={this.state.currentLocation}
             coords={this.state.coords}
             midpoint={this.state.midPoint}

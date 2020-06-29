@@ -3,6 +3,9 @@ import PersonList from "./PersonList";
 import Person from "./Person";
 import fetch from "cross-fetch";
 import MapContainer from "./Map";
+import PlacePicker from "./PlacePicker";
+
+
 
 class Application extends Component {
   state = {
@@ -32,6 +35,10 @@ class Application extends Component {
     midPoint: "",
 
     currentLocation: [],
+
+    POI: "",
+
+    radius: "300",
   };
 
   handleSetAddress = (e, v) => {
@@ -104,7 +111,7 @@ class Application extends Component {
     const url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     const apiKey = this.state.apiKey;
 
-    let fullUrl; 
+    let fullUrl;
 
     let newCoords = [];
     let a;
@@ -219,18 +226,46 @@ class Application extends Component {
   };
 
   componentDidMount() {
-    this.setCurrentLocation()
+    this.setCurrentLocation();
   }
+
+  handleSetPOI = (e) => {
+    this.setState({ POI: e });
+  };
+
+  getPlaces = () => {
+
+    if (this.state.POI === "") {
+      return null;
+    } 
+
+  }
+
+  handleSetRadius = (e) => {
+
+    this.setState({radius:e});
+  }
+
+
 
   render() {
     return (
       <div>
         <h1>Linq</h1>
-        <PersonList
-          people={this.state.people}
-          onAddPerson={() => this.handleAddPerson()}
-          onDeletePerson={() => this.handleDeletePerson()}
-        ></PersonList>
+        <div>
+          <PlacePicker 
+          onSetRadius={(e) => this.handleSetRadius(e)}
+          onSetPOI={(e) => this.handleSetPOI(e)}></PlacePicker>
+        </div>
+
+        <br />
+        <div>
+          <PersonList
+            people={this.state.people}
+            onAddPerson={() => this.handleAddPerson()}
+            onDeletePerson={() => this.handleDeletePerson()}
+          ></PersonList>
+        </div>
 
         <div>
           <button onClick={this.calculator}>Calculate</button>
@@ -240,12 +275,18 @@ class Application extends Component {
 
         <div>
           <MapContainer
+            POI={this.state.POI}
             addresses={this.state.addresses}
             currentLocation={this.state.currentLocation}
             coords={this.state.coords}
             midpoint={this.state.midPoint}
+            radius={this.state.radius}
           ></MapContainer>
         </div>
+
+        <script></script>
+
+
       </div>
     );
   }

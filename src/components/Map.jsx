@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Map, Marker, GoogleApiWrapper, InfoWindow } from "google-maps-react";
+import { Map, Marker, GoogleApiWrapper, InfoWindow, Circle } from "google-maps-react";
 
 export class MapContainer extends Component {
   state = {
@@ -44,6 +44,19 @@ onClose = props => {
   }
 };
 
+shouldComponentUpdate(nextProps) {
+
+  //prevents useless rerenders when user fidgets with radius slider
+
+  if (nextProps.radius !== this.props.radius) {
+    return false;
+  } else {
+    return true;
+  }
+
+}
+
+
 
   render() {
     return (
@@ -74,6 +87,21 @@ onClose = props => {
           }
           }
         ></Marker>
+
+        <Circle
+        radius={parseInt(this.props.radius)}
+        center={{
+          lat: this.props.midpoint[0],
+          lng: this.props.midpoint[1],
+        }}
+        strokeColor='transparent'
+        strokeOpacity={0}
+        strokeWeight={5}
+        fillColor='#FF0000'
+        fillOpacity={0.2}
+        visible={this.props.POI === "" ? false: true}
+        
+        ></Circle>
 
         <InfoWindow
           marker={this.state.activeMarker}

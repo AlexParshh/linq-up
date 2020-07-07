@@ -25,6 +25,40 @@ export class MapContainer extends Component {
     });
   };
 
+
+  displayPlacesMarkers = () => {
+
+    let coordsPlaces = []
+    let placesNames = []
+
+
+    for (let i = 0; i<this.props.nearbyPlaces.length;i++) {
+
+      coordsPlaces.push(this.props.nearbyPlaces[i].geometry.location);
+      placesNames.push(this.props.nearbyPlaces[i].name);
+    }
+
+
+    return coordsPlaces.map((address, index) => {
+      return (
+        <Marker
+          onClick={this.onMarkerClick}
+          key={"p"+index}
+          id={"p"+index}
+          name={placesNames[index]}
+          position={{
+            lat: address.lat,
+            lng: address.lng,
+          }}
+          icon={{
+            url: "http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png",
+          }
+          }
+        />
+      );
+    });
+  };
+
   onMarkerClick = (props, marker) => {
   this.setState({
     selectedPlace: props,
@@ -73,6 +107,7 @@ shouldComponentUpdate(nextProps) {
         }}
       >
         {this.displayMarkers()}
+        {this.displayPlacesMarkers()}
         <Marker
           onClick={this.onMarkerClick}
           key="midpoint"
@@ -89,10 +124,10 @@ shouldComponentUpdate(nextProps) {
         ></Marker>
 
         <Circle
-        radius={parseInt(this.props.radius)}
+        radius={parseInt(this.props.radius)*1.7}
         center={{
-          lat: this.props.midpoint[0],
-          lng: this.props.midpoint[1],
+          lat: (this.props.midpoint[0]=== "" ? 0 : parseFloat(this.props.midpoint[0])),
+          lng: (this.props.midpoint[0]=== "" ? 0 : parseFloat(this.props.midpoint[1])),
         }}
         strokeColor='transparent'
         strokeOpacity={0}

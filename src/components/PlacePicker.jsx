@@ -13,6 +13,7 @@ class PlacePicker extends Component {
 
     }
 
+
   render() {
     return (
       <div>

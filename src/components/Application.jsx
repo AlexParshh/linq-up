@@ -39,6 +39,8 @@ class Application extends Component {
     POI: "",
 
     radius: "300",
+
+    nearbyPlaces: {}
   };
 
   handleSetAddress = (e, v) => {
@@ -205,6 +207,7 @@ class Application extends Component {
     let midPoint = await this.findMidPoint(this.state.coords);
     this.setState({ midPoint: midPoint });
 
+    this.findNearbyPlaces();
     return this.state.midPoint;
   };
 
@@ -247,8 +250,21 @@ class Application extends Component {
   }
 
 
+  
+  async findNearbyPlaces() {
+    let link = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+this.state.midPoint[0]+","+this.state.midPoint[1]+"&radius="+this.state.radius+"&keyword="+this.state.POI+"&name&rating"+this.state.apiKey;
+    let res = await fetch(link);
+    let data = await res.json();
+
+    this.setState({nearbyPlaces: data.results});
+
+  }
+  
+
 
   render() {
+
+    
     return (
       <div>
         <h1>Linq</h1>
@@ -257,7 +273,6 @@ class Application extends Component {
           onSetRadius={(e) => this.handleSetRadius(e)}
           onSetPOI={(e) => this.handleSetPOI(e)}></PlacePicker>
         </div>
-
         <br />
         <div>
           <PersonList
@@ -281,6 +296,7 @@ class Application extends Component {
             coords={this.state.coords}
             midpoint={this.state.midPoint}
             radius={this.state.radius}
+            nearbyPlaces={this.state.nearbyPlaces}
           ></MapContainer>
         </div>
 

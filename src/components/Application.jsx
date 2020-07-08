@@ -268,6 +268,7 @@ class Application extends Component {
     return (
       <div>
         <h1>Linq</h1>
+    
         <div>
           <PlacePicker 
           onSetRadius={(e) => this.handleSetRadius(e)}
@@ -297,6 +298,7 @@ class Application extends Component {
             midpoint={this.state.midPoint}
             radius={this.state.radius}
             nearbyPlaces={this.state.nearbyPlaces}
+            apiKey={this.state.apiKey}
           ></MapContainer>
         </div>
 

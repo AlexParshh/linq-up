@@ -6,6 +6,7 @@ export class MapContainer extends Component {
     showingInfoWindow: false,
     activeMarker: {},
     selectedPlace: {},
+    currentPhoto: "",
   };
 
   displayMarkers = () => {
@@ -15,7 +16,7 @@ export class MapContainer extends Component {
           onClick={this.onMarkerClick}
           key={index}
           id={index}
-          name={this.props.addresses[index]}
+          name={<h4>{this.props.addresses[index]}</h4>}
           position={{
             lat: address.lat,
             lng: address.lng,
@@ -30,12 +31,16 @@ export class MapContainer extends Component {
 
     let coordsPlaces = []
     let placesNames = []
+    let ratings = []
+    let photos = []
 
 
     for (let i = 0; i<this.props.nearbyPlaces.length;i++) {
 
       coordsPlaces.push(this.props.nearbyPlaces[i].geometry.location);
       placesNames.push(this.props.nearbyPlaces[i].name);
+      ratings.push(this.props.nearbyPlaces[i].rating);
+      photos.push("https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&photoreference="+this.props.nearbyPlaces[i].photos[0].photo_reference+this.props.apiKey)
     }
 
 
@@ -43,9 +48,11 @@ export class MapContainer extends Component {
       return (
         <Marker
           onClick={this.onMarkerClick}
+          photo={photos[index]}
           key={"p"+index}
-          id={"p"+index}
-          name={placesNames[index]}
+          id={"place"}
+          rating={ratings[index]}
+          name={<h4>{placesNames[index]}</h4>}
           position={{
             lat: address.lat,
             lng: address.lng,
@@ -60,10 +67,11 @@ export class MapContainer extends Component {
   };
 
   onMarkerClick = (props, marker) => {
-  this.setState({
+
+    this.setState({
     selectedPlace: props,
     activeMarker: marker,
-    showingInfoWindow: true
+    showingInfoWindow: true,
   });
 
 }
@@ -72,8 +80,7 @@ export class MapContainer extends Component {
 onClose = props => {
   if (this.state.showingInfoWindow) {
     this.setState({
-      showingInfoWindow: false,
-      activeMarker: null
+      showingInfoWindow: false
     });
   }
 };
@@ -112,7 +119,13 @@ shouldComponentUpdate(nextProps) {
           onClick={this.onMarkerClick}
           key="midpoint"
           id="midpoint"
-          name="midpoint"
+          name={!this.props.coords ? <h4>Midpoint</h4> : 
+            <div>
+            <h4>Midpoint</h4>
+            <h4>{this.props.midpoint[0]}</h4>
+            <h4>{this.props.midpoint[1]}</h4>
+            </div>
+          }
           position={{
             lat: this.props.midpoint[0],
             lng: this.props.midpoint[1],
@@ -142,9 +155,20 @@ shouldComponentUpdate(nextProps) {
           marker={this.state.activeMarker}
           visible={this.state.showingInfoWindow}
           onClose={this.onClose}
+
         >
           <div>
-            <h4>{this.state.selectedPlace.name}</h4>
+            {this.state.selectedPlace.name}
+            {this.state.activeMarker.id === "midpoint" ? <button>Linq up!</button> : ""}
+            {this.state.activeMarker.id === "place" ? 
+            
+            <div>
+            <img src={this.state.activeMarker.photo}></img>
+            <h4>Rating: {this.state.activeMarker.rating}</h4>
+            <button>Linq up!</button>
+            </div>
+            
+             : ""}
           </div>
         </InfoWindow>
 

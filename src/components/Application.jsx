@@ -4,6 +4,8 @@ import Person from "./Person";
 import fetch from "cross-fetch";
 import MapContainer from "./Map";
 import PlacePicker from "./PlacePicker";
+import DirectionsPicker from "./DirectionsPicker";
+import 'bootstrap/dist/css/bootstrap.css';
 
 
 
@@ -40,7 +42,9 @@ class Application extends Component {
 
     radius: "300",
 
-    nearbyPlaces: {}
+    nearbyPlaces: {},
+
+    transportOption: null,
   };
 
   handleSetAddress = (e, v) => {
@@ -259,6 +263,10 @@ class Application extends Component {
     this.setState({nearbyPlaces: data.results});
 
   }
+
+  handleSetTransport = (e) => {
+    this.setState({transportOption:e})
+  }
   
 
 
@@ -268,13 +276,21 @@ class Application extends Component {
     return (
       <div>
         <h1>Linq</h1>
-    
+
         <div>
           <PlacePicker 
           onSetRadius={(e) => this.handleSetRadius(e)}
           onSetPOI={(e) => this.handleSetPOI(e)}></PlacePicker>
         </div>
         <br />
+
+        <div>
+          <DirectionsPicker
+          onSetTransport={(e) => this.handleSetTransport(e)}
+          ></DirectionsPicker>
+        </div>
+
+        <br/>
         <div>
           <PersonList
             people={this.state.people}

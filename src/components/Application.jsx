@@ -6,8 +6,7 @@ import MapContainer from "./Map";
 import PlacePicker from "./PlacePicker";
 import DirectionsPicker from "./DirectionsPicker";
 import 'bootstrap/dist/css/bootstrap.css';
-import Moment from 'moment';
-
+const moment = require('moment');
 
 class Application extends Component {
   state = {
@@ -52,6 +51,8 @@ class Application extends Component {
 
     travelTimes: [],
 
+    leaveTimes: [],
+
 
   };
 
@@ -80,7 +81,13 @@ class Application extends Component {
   handleAddPerson = () => {
     this.resetMidPoint();
     let newAddresses = [...this.state.addresses, ""];
-    this.setState({ addresses: newAddresses });
+    this.setState({ addresses: newAddresses,
+    leaveTimes: [],
+    meetupPoint: null,
+    travelTimes: [],
+    nearbyPlaces: {}
+
+   });
     this.setState({
       people: [
         ...this.state.people,
@@ -95,7 +102,11 @@ class Application extends Component {
 
   handleDeletePerson = () => {
     let newcoords = this.state.coords.slice(0, -1);
-    this.setState({ coords: newcoords });
+    this.setState({ coords: newcoords,
+      leaveTimes: [],
+      meetupPoint: null,
+      travelTimes: [],
+      nearbyPlaces: {} });
 
     this.resetMidPoint();
     let newAddresses = this.state.addresses.slice(0, -1);
@@ -317,9 +328,30 @@ class Application extends Component {
 
     this.setState({travelTimes})
 
+    this.getLeaveTimes()
+
   }
   
+  getLeaveTimes = () => {
 
+    let travelTimes = this.state.travelTimes;
+    let arrivalTime = moment(this.state.date);
+    let leaveTimes = [];
+
+    let current;
+
+    for (let i =0; i<travelTimes.length;i++) {
+      current = arrivalTime.clone().subtract(travelTimes[i].value, "seconds");
+      current = current.format("LLL")
+      leaveTimes.push(current)
+
+    }
+
+   
+
+    this.setState({leaveTimes})
+
+  }
 
   render() {
 
@@ -327,6 +359,7 @@ class Application extends Component {
     return (
       <div>
         <h1>Linq</h1>
+
 
         <div>
           <PlacePicker 

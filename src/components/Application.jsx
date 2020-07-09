@@ -50,6 +50,8 @@ class Application extends Component {
 
     meetupPoint: null,
 
+    travelTimes: [],
+
 
   };
 
@@ -279,8 +281,42 @@ class Application extends Component {
     this.setState({date})
   }
 
-  handleSetMeetupPoint = () => {
-    null
+  handleSetMeetupPoint = (loc) => {
+    this.setState({meetupPoint:loc})
+  }
+
+  async getTime(link) {
+    const res = await fetch(link);
+    const data = await res.json();
+
+    return data.routes[0].legs[0].duration
+  }
+
+  getTravelTimes = async () => {
+    let targetLat=this.state.meetupPoint.lat
+    let targetLon=this.state.meetupPoint.lng
+
+
+    let travelTimes = [];
+
+    let originLat, originLon, link, time;
+
+    
+    for (let i =0;i<this.state.coords.length;i++){
+
+      originLat = this.state.coords[i].lat
+      originLon = this.state.coords[i].lng
+
+      link = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?origin="+originLat+","+originLon+"&destination="+targetLat+","+targetLon+this.state.apiKey;
+
+      time = await this.getTime(link)
+
+      travelTimes.push(time)
+    }
+
+
+    this.setState({travelTimes})
+
   }
   
 
@@ -291,9 +327,6 @@ class Application extends Component {
     return (
       <div>
         <h1>Linq</h1>
-
-        <button>TEST</button>
-
 
         <div>
           <PlacePicker 
@@ -308,7 +341,7 @@ class Application extends Component {
           onSetDate = {(date) => this.handleSetDate(date)}
           ></DirectionsPicker>
         </div>
-
+        
         <br/>
         <div>
           <PersonList
@@ -324,6 +357,8 @@ class Application extends Component {
         <br />
         <div>{this.state.midPoint}</div>
 
+        <div><button onClick={this.getTravelTimes}>Linq up!</button></div>
+
         <div>
           <MapContainer
             POI={this.state.POI}
@@ -334,7 +369,7 @@ class Application extends Component {
             radius={this.state.radius}
             nearbyPlaces={this.state.nearbyPlaces}
             apiKey={this.state.apiKey}
-            onSetMeetupPoint={this.handleSetMeetupPoint}
+            onSetMeetupPoint={(loc) => this.handleSetMeetupPoint(loc)}
           ></MapContainer>
         </div>
 

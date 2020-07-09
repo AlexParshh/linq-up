@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Map, Marker, GoogleApiWrapper, InfoWindow, Circle } from "google-maps-react";
 
+
 export class MapContainer extends Component {
   state = {
     showingInfoWindow: false,
@@ -17,6 +18,10 @@ export class MapContainer extends Component {
           key={index}
           id={index}
           name={<h4>{this.props.addresses[index]}</h4>}
+          pos={{
+            lat: address.lat,
+            lng: address.lng,
+          }}
           position={{
             lat: address.lat,
             lng: address.lng,
@@ -57,6 +62,10 @@ export class MapContainer extends Component {
             lat: address.lat,
             lng: address.lng,
           }}
+          pos={{
+            lat: address.lat,
+            lng: address.lng,
+          }}
           icon={{
             url: "http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png",
           }
@@ -72,8 +81,9 @@ export class MapContainer extends Component {
     selectedPlace: props,
     activeMarker: marker,
     showingInfoWindow: true,
+  
   });
-
+    this.props.onSetMeetupPoint(this.state.activeMarker.pos)
 }
 
 
@@ -82,6 +92,7 @@ onClose = props => {
     this.setState({
       showingInfoWindow: false
     });
+    this.props.onSetMeetupPoint(null)
   }
 };
 
@@ -100,7 +111,9 @@ shouldComponentUpdate(nextProps) {
 
 
   render() {
+
     return (
+      <div>
       <Map
         google={this.props.google}
         zoom={8}
@@ -127,6 +140,10 @@ shouldComponentUpdate(nextProps) {
             </div>
           }
           position={{
+            lat: this.props.midpoint[0],
+            lng: this.props.midpoint[1],
+          }}
+          pos={{
             lat: this.props.midpoint[0],
             lng: this.props.midpoint[1],
           }}
@@ -159,13 +176,13 @@ shouldComponentUpdate(nextProps) {
         >
           <div>
             {this.state.selectedPlace.name}
-            {this.state.activeMarker.id === "midpoint" ? <button>Linq up!</button> : ""}
+            {this.state.activeMarker.id === "midpoint" ? console.log("hello") : ""}
             {this.state.activeMarker.id === "place" ? 
             
             <div>
+
             <img src={this.state.activeMarker.photo}></img>
             <h4>Rating: {this.state.activeMarker.rating}</h4>
-            <button>Linq up!</button>
             </div>
             
              : ""}
@@ -173,6 +190,9 @@ shouldComponentUpdate(nextProps) {
         </InfoWindow>
 
       </Map>
+
+
+      </div>
     );
   }
 }
@@ -180,3 +200,5 @@ shouldComponentUpdate(nextProps) {
 export default GoogleApiWrapper({
   apiKey: "AIzaSyAF6LzDWnCO0yQ3_xVfXMYicN6MqUFl4q0",
 })(MapContainer);
+
+//console.log(this.state.activeMarker.pos)

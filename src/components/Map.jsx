@@ -92,7 +92,7 @@ onClose = props => {
     this.setState({
       showingInfoWindow: false
     });
-    this.props.onSetMeetupPoint(null)
+    this.props.onSetMeetupPoint({lat:this.props.midpoint[0],lng:this.props.midpoint[1]})
   }
 };
 

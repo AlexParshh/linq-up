@@ -258,6 +258,9 @@ class Application extends Component {
 
   handleSetPOI = (e) => {
     this.setState({ POI: e });
+    if (e === "") {
+      this.setState({nearbyPlaces:{}})
+    }
   };
 
   getPlaces = () => {
@@ -276,16 +279,42 @@ class Application extends Component {
 
   
   async findNearbyPlaces() {
+
+    if (this.state.POI === "") {
+      //if no Point of interest selected
+      let newMeetupPoint = {lat:this.state.midPoint[0],lng:this.state.midPoint[1]};
+      this.setState({meetupPoint:newMeetupPoint});
+      return
+    }
+
     let link = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+this.state.midPoint[0]+","+this.state.midPoint[1]+"&radius="+this.state.radius+"&keyword="+this.state.POI+"&name&rating"+this.state.apiKey;
     let res = await fetch(link);
     let data = await res.json();
 
-    this.setState({nearbyPlaces: data.results});
+
+    //if no nearby places were found
+    if (data.status === "ZERO_RESULTS") {
+      return
+    } else {
+      this.setState({nearbyPlaces: data.results});
+    }
 
   }
 
   handleSetTransport = (e) => {
-    this.setState({transportOption:e})
+    let l;
+    if (e =="bike") {
+      l = "bicycling"
+    } else if (e=="car") {
+      l="driving"
+    } else if (e=="walk") {
+      l="walking"
+    } else {
+      l = "transit"
+    }
+ 
+
+    this.setState({transportOption:l})
   }
 
   handleSetDate = (date) => {
@@ -304,13 +333,30 @@ class Application extends Component {
   }
 
   getTravelTimes = async () => {
+
+    if (this.state.meetupPoint === null) {
+      let newMeetupPoint = {lat:this.state.midPoint[0],lng:this.state.midPoint[1]};
+      this.setState({meetupPoint:newMeetupPoint});
+    } 
+    
+    if (this.state.midPoint === "error" || this.state.addresses.length == 0) {
+      return
+    }
+
+
     let targetLat=this.state.meetupPoint.lat
     let targetLon=this.state.meetupPoint.lng
 
-
     let travelTimes = [];
 
-    let originLat, originLon, link, time;
+    let originLat, originLon, link, time, travelMode;
+
+    if (this.state.transportOption === null) {
+      //defaults to driving if nothing was selected
+      travelMode = "driving"
+    } else {
+      travelMode = this.state.transportOption;
+    }
 
     
     for (let i =0;i<this.state.coords.length;i++){
@@ -318,7 +364,7 @@ class Application extends Component {
       originLat = this.state.coords[i].lat
       originLon = this.state.coords[i].lng
 
-      link = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?origin="+originLat+","+originLon+"&destination="+targetLat+","+targetLon+this.state.apiKey;
+      link = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?origin="+originLat+","+originLon+"&destination="+targetLat+","+targetLon+"&mode="+travelMode+this.state.apiKey;
 
       time = await this.getTime(link)
 
@@ -360,7 +406,6 @@ class Application extends Component {
       <div>
         <h1>Linq</h1>
 
-
         <div>
           <PlacePicker 
           onSetRadius={(e) => this.handleSetRadius(e)}
@@ -388,7 +433,6 @@ class Application extends Component {
           <button onClick={this.calculator}>Calculate</button>
         </div>
         <br />
-        <div>{this.state.midPoint}</div>
 
         <div><button onClick={this.getTravelTimes}>Linq up!</button></div>
 

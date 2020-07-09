@@ -6,7 +6,7 @@ import MapContainer from "./Map";
 import PlacePicker from "./PlacePicker";
 import DirectionsPicker from "./DirectionsPicker";
 import 'bootstrap/dist/css/bootstrap.css';
-
+import Moment from 'moment';
 
 
 class Application extends Component {
@@ -45,7 +45,17 @@ class Application extends Component {
     nearbyPlaces: {},
 
     transportOption: null,
+
+    date: new Date(),
+
+    meetupPoint: null,
+
+
   };
+
+  componentDidMount() {
+    this.setCurrentLocation();
+  }
 
   handleSetAddress = (e, v) => {
     let newAddresses = this.state.addresses.slice();
@@ -232,9 +242,6 @@ class Application extends Component {
     }
   };
 
-  componentDidMount() {
-    this.setCurrentLocation();
-  }
 
   handleSetPOI = (e) => {
     this.setState({ POI: e });
@@ -267,6 +274,14 @@ class Application extends Component {
   handleSetTransport = (e) => {
     this.setState({transportOption:e})
   }
+
+  handleSetDate = (date) => {
+    this.setState({date})
+  }
+
+  handleSetMeetupPoint = () => {
+    null
+  }
   
 
 
@@ -276,6 +291,9 @@ class Application extends Component {
     return (
       <div>
         <h1>Linq</h1>
+
+        <button>TEST</button>
+
 
         <div>
           <PlacePicker 
@@ -287,6 +305,7 @@ class Application extends Component {
         <div>
           <DirectionsPicker
           onSetTransport={(e) => this.handleSetTransport(e)}
+          onSetDate = {(date) => this.handleSetDate(date)}
           ></DirectionsPicker>
         </div>
 
@@ -315,10 +334,10 @@ class Application extends Component {
             radius={this.state.radius}
             nearbyPlaces={this.state.nearbyPlaces}
             apiKey={this.state.apiKey}
+            onSetMeetupPoint={this.handleSetMeetupPoint}
           ></MapContainer>
         </div>
 
-        <script></script>
 
 
       </div>

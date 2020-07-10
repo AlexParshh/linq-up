@@ -11,8 +11,6 @@ const moment = require('moment');
 
 class Application extends Component {
   state = {
-    apiKey: "&key=AIzaSyAF6LzDWnCO0yQ3_xVfXMYicN6MqUFl4q0",
-
     people: [
       <Person
         key="1"
@@ -132,37 +130,25 @@ class Application extends Component {
     this.setState({people});
   };
 
-  stringParser = (a) => {
-    let b = a.split(" ");
-    let newString = "";
+  getCoords = async (address) => {
 
-    for (let i = 0; i < b.length; i++) {
-      newString += b[i] + "%20";
-    }
+    let bod = {address:address}
+    const res = await Axios.post('http://localhost:4000/geolocate', bod)
 
-    return newString.slice(0, -3);
-  };
+    if (res.status!== 200) throw Error(res.body.message);
 
-  async getCoords(link) {
-    const res = await fetch(link);
-    const data = await res.json();
-
-    return data["results"][0].geometry.location;
+    return res.data;
   }
 
   convertToCoords = async () => {
     const all = this.state.addresses;
-    const url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-    const apiKey = this.state.apiKey;
-
-    let fullUrl;
 
     let newCoords = [];
     let a;
 
     for (let i = 0; i < all.length; i++) {
-      fullUrl = url + all[i] + apiKey;
-      a = await this.getCoords(fullUrl);
+
+      a = await this.getCoords(all[i]);
       newCoords.push(a);
     }
 
@@ -250,8 +236,34 @@ class Application extends Component {
     this.setState({ midPoint: midPoint });
 
     this.findNearbyPlaces();
-    return this.state.midPoint;
   };
+
+  findNearbyPlaces = async () => {
+
+    if (this.state.POI === "") {
+      //if no Point of interest selected
+      let newMeetupPoint = {lat:this.state.midPoint[0],lng:this.state.midPoint[1]};
+      this.setState({meetupPoint:newMeetupPoint});
+      return
+    }
+
+    const content = {midPoint:this.state.midPoint,radius:this.state.radius,POI:this.state.POI}
+
+    const res = await Axios.post('http://localhost:4000/nearbyplaces', content)
+
+
+    if (res.status!== 200) throw Error(res);
+
+    if (res.data.status === "ZERO_RESULTS") {
+      return
+    } else {
+      this.setState({nearbyPlaces: res.data.results});
+    }
+
+
+  }
+
+
 
   resetMidPoint = () => {
     this.setState({ midPoint: [] });
@@ -291,31 +303,6 @@ class Application extends Component {
     this.setState({radius:e});
   }
 
-
-  
-  async findNearbyPlaces() {
-
-    if (this.state.POI === "") {
-      //if no Point of interest selected
-      let newMeetupPoint = {lat:this.state.midPoint[0],lng:this.state.midPoint[1]};
-      this.setState({meetupPoint:newMeetupPoint});
-      return
-    }
-
-    let link = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+this.state.midPoint[0]+","+this.state.midPoint[1]+"&radius="+this.state.radius+"&keyword="+this.state.POI+"&name&rating"+this.state.apiKey;
-    let res = await fetch(link);
-    let data = await res.json();
-
-
-    //if no nearby places were found
-    if (data.status === "ZERO_RESULTS") {
-      return
-    } else {
-      this.setState({nearbyPlaces: data.results});
-    }
-
-  }
-
   handleSetTransport = (e) => {
     let l;
     if (e ==="bike") {
@@ -347,6 +334,7 @@ class Application extends Component {
     return data.routes[0].legs[0].duration
   }
 
+
   getTravelTimes = async () => {
 
     if (this.state.meetupPoint === null) {
@@ -362,9 +350,10 @@ class Application extends Component {
     let targetLat=this.state.meetupPoint.lat
     let targetLon=this.state.meetupPoint.lng
 
+
     let travelTimes = [];
 
-    let originLat, originLon, link, time, travelMode;
+    let originLat, originLon, time, travelMode, content;
 
     if (this.state.transportOption === null) {
       //defaults to driving if nothing was selected
@@ -379,11 +368,11 @@ class Application extends Component {
       originLat = this.state.coords[i].lat
       originLon = this.state.coords[i].lng
 
-      link = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?origin="+originLat+","+originLon+"&destination="+targetLat+","+targetLon+"&mode="+travelMode+this.state.apiKey;
+      content = {targetLat:targetLat, targetLon:targetLon, originLat:originLat, originLon:originLon, travelMode:travelMode };
 
-      time = await this.getTime(link)
+      time = await Axios.post('http://localhost:4000/traveltime',content)
 
-      travelTimes.push(time)
+      travelTimes.push(time.data.routes[0].legs[0].duration)
     }
 
 
@@ -433,11 +422,13 @@ class Application extends Component {
       email = emails[i]
 
       content = {to:email,text:text}
-      Axios.post('http://localhost:4000/send-email', content)
+      Axios.post('http://localhost:4000/sendemail', content)
 
     }
 
   }
+
+
 
 
   render() {
@@ -472,7 +463,6 @@ class Application extends Component {
 
         <div><button onClick={this.sendEmails}>SEND EMAIL</button></div>
 
-
         <div>
           <button onClick={this.calculator}>Calculate</button>
         </div>
@@ -489,8 +479,8 @@ class Application extends Component {
             midpoint={this.state.midPoint}
             radius={this.state.radius}
             nearbyPlaces={this.state.nearbyPlaces}
-            apiKey={this.state.apiKey}
             onSetMeetupPoint={(loc) => this.handleSetMeetupPoint(loc)}
+            apiKey={"&key=AIzaSyAF6LzDWnCO0yQ3_xVfXMYicN6MqUFl4q0"}
           ></MapContainer>
         </div>
 

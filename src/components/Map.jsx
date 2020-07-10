@@ -176,7 +176,6 @@ shouldComponentUpdate(nextProps) {
         >
           <div>
             {this.state.selectedPlace.name}
-            {this.state.activeMarker.id === "midpoint" ? console.log("hello") : ""}
             {this.state.activeMarker.id === "place" ? 
             
             <div>

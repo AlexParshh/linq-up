@@ -6,6 +6,7 @@ import MapContainer from "./Map";
 import PlacePicker from "./PlacePicker";
 import DirectionsPicker from "./DirectionsPicker";
 import 'bootstrap/dist/css/bootstrap.css';
+import Axios from 'axios';
 const moment = require('moment');
 
 class Application extends Component {
@@ -317,11 +318,11 @@ class Application extends Component {
 
   handleSetTransport = (e) => {
     let l;
-    if (e =="bike") {
+    if (e ==="bike") {
       l = "bicycling"
-    } else if (e=="car") {
+    } else if (e==="car") {
       l="driving"
-    } else if (e=="walk") {
+    } else if (e==="walk") {
       l="walking"
     } else {
       l = "transit"
@@ -353,7 +354,7 @@ class Application extends Component {
       this.setState({meetupPoint:newMeetupPoint});
     } 
     
-    if (this.state.midPoint === "error" || this.state.addresses.length == 0) {
+    if (this.state.midPoint === "error" || this.state.addresses.length === 0) {
       return
     }
 
@@ -413,6 +414,32 @@ class Application extends Component {
 
   }
 
+
+  sendEmails = () => {
+
+    let emails = this.state.emails;
+    let leaveTimes = this.state.leaveTimes;
+    let coords = this.state.coords;
+    let meetupPoint = this.state.meetupPoint;
+
+    let text,email,content;
+
+    for (let i = 0; i<leaveTimes.length;i++) {
+      text = "This is a reminder to linq up!\nIn order to arrive at the linq up point, please depart at the following time:\n";
+      text+=(leaveTimes[i]+"\n");
+      text+="The directions to your destination can be found using this link\n";
+      text+=("https://www.google.com/maps/dir/"+coords[i].lat+","+coords[i].lng+"/"+meetupPoint.lat+","+meetupPoint.lng+"/")
+      
+      email = emails[i]
+
+      content = {to:email,text:text}
+      Axios.post('http://localhost:4000/send-email', content)
+
+    }
+
+  }
+
+
   render() {
 
     
@@ -442,6 +469,9 @@ class Application extends Component {
             onDeletePerson={() => this.handleDeletePerson()}
           ></PersonList>
         </div>
+
+        <div><button onClick={this.sendEmails}>SEND EMAIL</button></div>
+
 
         <div>
           <button onClick={this.calculator}>Calculate</button>

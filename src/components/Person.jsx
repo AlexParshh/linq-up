@@ -10,6 +10,7 @@ class Person extends Component {
       <div>
         <h4>Person #{this.props.value}</h4>
         <form>
+          
           <GooglePlacesAutocomplete
             onSetAddress={this.props.onSetAddress}
             onSelect={({ description }) =>
@@ -29,6 +30,7 @@ class Person extends Component {
               </div>
             )}
           />
+          <input type="text" placeholder="email" onChange={(e) => this.props.onSetEmail(e.target.value,this.props.value)}></input>
         </form>
       </div>
     );

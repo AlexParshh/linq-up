@@ -17,16 +17,19 @@ class Application extends Component {
         key="1"
         value="1"
         onSetAddress={(e, v) => this.handleSetAddress(e, v)}
+        onSetEmail={(e, v) => this.handleSetEmail(e, v)}
       ></Person>,
       <Person
         key="2"
         value="2"
         onSetAddress={(e, v) => this.handleSetAddress(e, v)}
+        onSetEmail={(e, v) => this.handleSetEmail(e, v)}
       ></Person>,
       <Person
         key="3"
         value="3"
         onSetAddress={(e, v) => this.handleSetAddress(e, v)}
+        onSetEmail={(e, v) => this.handleSetEmail(e, v)}
       ></Person>,
     ],
     addresses: ["", "", ""],
@@ -53,8 +56,16 @@ class Application extends Component {
 
     leaveTimes: [],
 
+    emails: ["","",""],
+
 
   };
+
+  handleSetEmail = (e, v) => {
+    let newEmails = this.state.emails.slice();
+    newEmails[v - 1] = e;
+    this.setState({emails:newEmails})
+  }
 
   componentDidMount() {
     this.setCurrentLocation();
@@ -80,12 +91,14 @@ class Application extends Component {
 
   handleAddPerson = () => {
     this.resetMidPoint();
+    let newEmails = [...this.state.emails,""];
     let newAddresses = [...this.state.addresses, ""];
     this.setState({ addresses: newAddresses,
     leaveTimes: [],
     meetupPoint: null,
     travelTimes: [],
-    nearbyPlaces: {}
+    nearbyPlaces: {},
+    emails:newEmails,
 
    });
     this.setState({
@@ -95,6 +108,7 @@ class Application extends Component {
           key={this.state.people.length + 1}
           value={this.state.people.length + 1}
           onSetAddress={(e, v) => this.handleSetAddress(e, v)}
+          onSetEmail={(e, v) => this.handleSetEmail(e, v)}
         ></Person>,
       ],
     });
@@ -109,12 +123,12 @@ class Application extends Component {
       nearbyPlaces: {} });
 
     this.resetMidPoint();
+    let newEmails = this.state.emails.slice(0, -1);
     let newAddresses = this.state.addresses.slice(0, -1);
-    this.setState({ addresses: newAddresses });
+    this.setState({ addresses: newAddresses,
+    emails:newEmails });
     let people = this.state.people.slice(0, -1);
-    this.setState({
-      people: people,
-    });
+    this.setState({people});
   };
 
   stringParser = (a) => {

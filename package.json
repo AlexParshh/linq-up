@@ -27,7 +27,8 @@
     "react-time-picker": "^4.0.1",
     "react-widgets": "^4.5.0",
     "react-widgets-globalize": "^5.0.21",
-    "react-widgets-moment": "^4.0.28"
+    "react-widgets-moment": "^4.0.28",
+    "reactstrap": "^8.5.1"
   },
   "scripts": {
     "start": "react-scripts start",

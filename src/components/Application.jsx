@@ -6,6 +6,7 @@ import MapContainer from "./Map";
 import PlacePicker from "./PlacePicker";
 import DirectionsPicker from "./DirectionsPicker";
 import 'bootstrap/dist/css/bootstrap.css';
+import './styles.css'
 import Axios from 'axios';
 const moment = require('moment');
 
@@ -436,14 +437,16 @@ class Application extends Component {
     
     return (
       <div>
-        <h1>Linq</h1>
+        <div className="jumbotron">
+          <h1 className="display-3">Linq up</h1>
+          </div>
+
 
         <div>
           <PlacePicker 
           onSetRadius={(e) => this.handleSetRadius(e)}
           onSetPOI={(e) => this.handleSetPOI(e)}></PlacePicker>
         </div>
-        <br />
 
         <div>
           <DirectionsPicker
@@ -452,7 +455,6 @@ class Application extends Component {
           ></DirectionsPicker>
         </div>
         
-        <br/>
         <div>
           <PersonList
             people={this.state.people}
@@ -461,14 +463,13 @@ class Application extends Component {
           ></PersonList>
         </div>
 
-        <div><button onClick={this.sendEmails}>SEND EMAIL</button></div>
-
-        <div>
-          <button onClick={this.calculator}>Calculate</button>
+        <div className="buttonholder">
+          <button className="btn btn-outline-secondary" onClick={this.calculator}>Calculate</button>
         </div>
-        <br />
 
-        <div><button onClick={this.getTravelTimes}>Linq up!</button></div>
+        <div className="buttonholder"><button className="btn btn-outline-warning" onClick={this.getTravelTimes}>Linq up!</button></div>
+
+        <div><button onClick={this.sendEmails}>SEND EMAIL</button></div>
 
         <div>
           <MapContainer
@@ -483,8 +484,6 @@ class Application extends Component {
             apiKey={"&key=AIzaSyAF6LzDWnCO0yQ3_xVfXMYicN6MqUFl4q0"}
           ></MapContainer>
         </div>
-
-
 
       </div>
     );

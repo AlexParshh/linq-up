@@ -1,0 +1,22 @@
+.holder {
+    overflow-y: scroll;
+    height: 390px;
+    width: 430px;
+}
+
+.buttonholder {
+    text-align: center;
+    width: 430px;
+    margin: 5px;
+
+}
+
+.togglebuttonholder {
+    margin: 5px;
+    width: 430px;
+    text-align: center;
+}
+
+.timepicker {
+    background: lightblue;
+}

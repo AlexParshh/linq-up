@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+
 class PlacePicker extends Component {
 
     state = {
@@ -18,12 +19,13 @@ class PlacePicker extends Component {
     return (
       <div>
         <span>
-          <h4>Point Of Interest</h4>
-          <input type="test" placeholder="Leave Blank = no POI" onChange={(e)=>this.props.onSetPOI(e.target.value)}></input>
+          <div className="buttonholder"><h4><span className="badge badge-info">Point of Interest</span></h4></div>
+          <input style={{width:"400px", margin:"5px"}} className="form-control" type="test" placeholder="Leave Blank If None" onChange={(e)=>this.props.onSetPOI(e.target.value)}></input>
         </span>
         <span>
-          <h4>Radius</h4>
+          <div className="buttonholder"><h4><span className="badge badge-info">Point of Interest Radius</span></h4></div>
           <input
+            style={{width:"400px",margin:"5px"}}
             type="range"
             min="0"
             max="1000"

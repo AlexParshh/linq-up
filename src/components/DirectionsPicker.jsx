@@ -4,6 +4,7 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import "./icons.css";
 import DateTimePicker from "react-datetime-picker";
 
+
 class DirectionsPicker extends Component {
   state = {
     checked: null,
@@ -20,17 +21,17 @@ class DirectionsPicker extends Component {
 
     return (
       <div>
-        <h4>Directions specifications</h4>
+        <div className="buttonholder"><h4><span className="badge badge-info">Meet Up Time</span></h4></div>
 
-        <div>
+        <div className="togglebuttonholder">
           <DateTimePicker
+            className = "badge badge-light"
             onChange={(date) => {
               this.setState({ date });
               this.props.onSetDate(date);
             }}
             value={this.state.date}
             disableClock={true}
-            //disableCalendar={true}
             yearPlaceholder="yyyy"
             monthPlaceholder="mm"
             dayPlaceholder="dd"
@@ -41,9 +42,12 @@ class DirectionsPicker extends Component {
         </div>
 
         <div>
-          <ButtonGroup toggle>
+        <div className="buttonholder"><h4><span className="badge badge-info">Transport Type</span></h4></div>
+
+          <ButtonGroup toggle className="buttonholder">
             {radios.map((radio, idx) => (
               <ToggleButton
+              
                 key={idx}
                 type="radio"
                 variant="secondary"
@@ -55,7 +59,7 @@ class DirectionsPicker extends Component {
                   this.setState({ checked: e.currentTarget.value });
                 }}
               >
-                <i class="material-icons">{radio.name}</i>
+                <i className="material-icons">{radio.name}</i>
               </ToggleButton>
             ))}
           </ButtonGroup>

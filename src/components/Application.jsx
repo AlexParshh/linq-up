@@ -481,7 +481,6 @@ class Application extends Component {
             radius={this.state.radius}
             nearbyPlaces={this.state.nearbyPlaces}
             onSetMeetupPoint={(loc) => this.handleSetMeetupPoint(loc)}
-            apiKey={"&key=AIzaSyAF6LzDWnCO0yQ3_xVfXMYicN6MqUFl4q0"}
           ></MapContainer>
         </div>
 

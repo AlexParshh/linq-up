@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-
+require('dotenv').config();
 
 
 class Person extends Component {
@@ -19,7 +19,7 @@ class Person extends Component {
             inputStyle={{width:"400px", margin:"5px"}}
             inputClassName="form-control"
             placeholder="Address"
-            apiKey={"AIzaSyAF6LzDWnCO0yQ3_xVfXMYicN6MqUFl4q0"}
+            apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
             onSetAddress={this.props.onSetAddress}
             onSelect={({ description }) =>
               this.props.onSetAddress(description, this.props.value)

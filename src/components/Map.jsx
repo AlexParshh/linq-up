@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Map, Marker, GoogleApiWrapper, InfoWindow, Circle } from "google-maps-react";
-
+require('dotenv').config();
 
 export class MapContainer extends Component {
   state = {
@@ -45,7 +45,7 @@ export class MapContainer extends Component {
       coordsPlaces.push(this.props.nearbyPlaces[i].geometry.location);
       placesNames.push(this.props.nearbyPlaces[i].name);
       ratings.push(this.props.nearbyPlaces[i].rating);
-      photos.push("https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&photoreference="+this.props.nearbyPlaces[i].photos[0].photo_reference+this.props.apiKey)
+      photos.push("https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&photoreference="+this.props.nearbyPlaces[i].photos[0].photo_reference+"&key="+process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     }
 
 
@@ -180,7 +180,7 @@ shouldComponentUpdate(nextProps) {
             
             <div>
 
-            <img src={this.state.activeMarker.photo}></img>
+            <img src={this.state.activeMarker.photo} alt="https://bitsofco.de/content/images/2018/12/Screenshot-2018-12-16-at-21.06.29.png"></img>
             <h4>Rating: {this.state.activeMarker.rating}</h4>
             </div>
             
@@ -197,7 +197,7 @@ shouldComponentUpdate(nextProps) {
 }
 
 export default GoogleApiWrapper({
-  apiKey: "AIzaSyAF6LzDWnCO0yQ3_xVfXMYicN6MqUFl4q0",
+  apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
 })(MapContainer);
 
 //console.log(this.state.activeMarker.pos)

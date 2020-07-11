@@ -8,6 +8,7 @@ import DirectionsPicker from "./DirectionsPicker";
 import 'bootstrap/dist/css/bootstrap.css';
 import './styles.css'
 import Axios from 'axios';
+import { Alert, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 const moment = require('moment');
 
 class Application extends Component {
@@ -50,7 +51,7 @@ class Application extends Component {
 
     date: new Date(),
 
-    meetupPoint: null,
+    meetupPoint: "",
 
     travelTimes: [],
 
@@ -58,7 +59,11 @@ class Application extends Component {
 
     emails: ["","",""],
 
-    linqupbtnStyle: {display:"none"}
+    linqupbtnStyle: {display:"none"},
+
+    modalVisibility: false,
+
+    meetupPointName: "",
 
 
   };
@@ -70,6 +75,7 @@ class Application extends Component {
   }
 
   componentDidMount() {
+    this.handleSetDate(this.state.date)
     this.setCurrentLocation();
   }
 
@@ -323,10 +329,15 @@ class Application extends Component {
   }
 
   handleSetDate = (date) => {
-    this.setState({date})
+
+    let newDate = moment(date)
+    newDate = newDate.format("LLL")
+    
+    this.setState({date:newDate})
   }
 
   handleSetMeetupPoint = (loc) => {
+
     this.setState({meetupPoint:loc})
   }
 
@@ -433,8 +444,6 @@ class Application extends Component {
 
   linqupBtnChecker = () => {
 
-    console.log("WORKING")
-
     let emails = this.state.emails;
     const newStyle = {display:"inline"};
     let valid = true;
@@ -447,28 +456,46 @@ class Application extends Component {
 
     }
 
-    console.log(valid)
 
     if (valid) {
       this.setState({linqupbtnStyle:newStyle});
-      console.log("WORKED")
     }
 
   }
 
+  showModal = () => {
+    this.setState({modalVisibility:true})
+  }
 
+  hideModal = () => {
+    this.setState({modalVisibility:false})
+  }
 
+  handleSetMeetName = (name) => {
+    this.setState({meetupPointName:name});
+  }
+  
 
   render() {
 
-    
+    let time, meetupPoint;
+
+    if (this.state.meetupPoint) {
+
+      if (this.state.meetupPointName !== "") {
+        meetupPoint = this.state.meetupPointName;
+      } else {
+        meetupPoint = [this.state.meetupPoint.lat,this.state.meetupPoint.lng].toString();
+        time = this.state.date.toString();
+      }
+    }
+
     return (
       <div>
         <div className="jumbotron">
           <h1 className="display-3">Linq up</h1>
           </div>
-
-
+          
         <div>
           <PlacePicker 
           onSetRadius={(e) => this.handleSetRadius(e)}
@@ -494,9 +521,27 @@ class Application extends Component {
           <button className="btn btn-outline-secondary" onClick={this.calculator}>Calculate</button>
         </div>
 
-        <div className="buttonholder"><button style={this.state.linqupbtnStyle} className="btn btn-outline-warning" onClick={this.getTravelTimes}>Linq up!</button></div>
+        <div className="buttonholder"><button style={this.state.linqupbtnStyle} className="btn btn-outline-warning" onClick={() => {
+          this.getTravelTimes();
+          this.showModal();
+        }}>Linq up!</button></div>
 
-        <div><button onClick={this.sendEmails}>SEND EMAIL</button></div>
+        <Modal centered={true}isOpen={this.state.modalVisibility}>
+        <ModalHeader>
+          Linq up Confirmation
+        </ModalHeader>
+        <ModalBody>
+          <Alert color="warning">Linq up Time: {time}</Alert>
+          <Alert color="warning">Linq up Place: {meetupPoint}</Alert>
+        </ModalBody>
+        <ModalFooter>
+          <button className="btn btn-danger" onClick={this.hideModal}>Cancel</button>
+          <button className="btn btn-success" onClick={() => {
+            this.hideModal();
+            this.sendEmails();
+          }}>Proceed</button>
+        </ModalFooter>
+        </Modal>
 
         <div>
           <MapContainer
@@ -508,6 +553,7 @@ class Application extends Component {
             radius={this.state.radius}
             nearbyPlaces={this.state.nearbyPlaces}
             onSetMeetupPoint={(loc) => this.handleSetMeetupPoint(loc)}
+            onSetMeetName={(name) => this.handleSetMeetName(name)}
           ></MapContainer>
         </div>
 

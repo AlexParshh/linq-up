@@ -58,6 +58,7 @@ export class MapContainer extends Component {
           id={"place"}
           rating={ratings[index]}
           name={<h4>{placesNames[index]}</h4>}
+          cleanName={placesNames[index]}
           position={{
             lat: address.lat,
             lng: address.lng,
@@ -83,7 +84,11 @@ export class MapContainer extends Component {
     showingInfoWindow: true,
   
   });
-    this.props.onSetMeetupPoint(this.state.activeMarker.pos)
+    this.props.onSetMeetupPoint(this.state.activeMarker.pos);
+
+    if (this.state.activeMarker.cleanName) {
+      this.props.onSetMeetName(this.state.activeMarker.cleanName);
+    }
 }
 
 
@@ -93,6 +98,7 @@ onClose = props => {
       showingInfoWindow: false
     });
     this.props.onSetMeetupPoint({lat:this.props.midpoint[0],lng:this.props.midpoint[1]})
+    this.props.onSetMeetName("");
   }
 };
 

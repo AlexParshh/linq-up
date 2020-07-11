@@ -58,6 +58,8 @@ class Application extends Component {
 
     emails: ["","",""],
 
+    linqupbtnStyle: {display:"none"}
+
 
   };
 
@@ -235,7 +237,7 @@ class Application extends Component {
     await this.convertToCoords();
     let midPoint = await this.findMidPoint(this.state.coords);
     this.setState({ midPoint: midPoint });
-
+    this.linqupBtnChecker()
     this.findNearbyPlaces();
   };
 
@@ -429,6 +431,31 @@ class Application extends Component {
 
   }
 
+  linqupBtnChecker = () => {
+
+    console.log("WORKING")
+
+    let emails = this.state.emails;
+    const newStyle = {display:"inline"};
+    let valid = true;
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    //validating all emails before displaying linq up button to prevent email errors
+    for (let i = 0;i<emails.length;i++) {
+      if (!re.test(String(emails[i]).toLowerCase())) {
+        valid = false;
+      }
+
+    }
+
+    console.log(valid)
+
+    if (valid) {
+      this.setState({linqupbtnStyle:newStyle});
+      console.log("WORKED")
+    }
+
+  }
+
 
 
 
@@ -467,7 +494,7 @@ class Application extends Component {
           <button className="btn btn-outline-secondary" onClick={this.calculator}>Calculate</button>
         </div>
 
-        <div className="buttonholder"><button className="btn btn-outline-warning" onClick={this.getTravelTimes}>Linq up!</button></div>
+        <div className="buttonholder"><button style={this.state.linqupbtnStyle} className="btn btn-outline-warning" onClick={this.getTravelTimes}>Linq up!</button></div>
 
         <div><button onClick={this.sendEmails}>SEND EMAIL</button></div>
 

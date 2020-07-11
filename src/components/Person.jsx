@@ -4,6 +4,30 @@ require('dotenv').config();
 
 
 class Person extends Component {
+
+
+  state = {
+    emailClassName: "form-control",
+
+  }
+
+
+  checkEmail = (email) => {
+
+    if (email==="") {
+      this.setState({emailClassName:"form-control"});
+      return
+    }
+
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (re.test(String(email).toLowerCase())) {
+      this.setState({emailClassName:"form-control is-valid"})
+    } else {
+      this.setState({emailClassName:"form-control is-invalid"})
+    }
+  }
+
   render() {
     
     
@@ -40,7 +64,10 @@ class Person extends Component {
               </div>
             )}
           ></GooglePlacesAutocomplete>
-          <input className="form-control" style={{width:"400px",margin:"5px"}}type="text" placeholder="Email" onChange={(e) => this.props.onSetEmail(e.target.value,this.props.value)}></input>
+          <input id={this.props.value} className={this.state.emailClassName} style={{width:"400px",margin:"5px"}}type="text" placeholder="Email" onChange={(e) => {
+            this.checkEmail(e.target.value)
+            this.props.onSetEmail(e.target.value,this.props.value)}}></input>
+
         </form>
       </div>
     );

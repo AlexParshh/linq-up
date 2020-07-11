@@ -4,10 +4,9 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import "./icons.css";
 import DateTimePicker from "react-datetime-picker";
 
-
 class DirectionsPicker extends Component {
   state = {
-    checked: null,
+    checked: "3",
     date: new Date(),
   };
 
@@ -21,33 +20,16 @@ class DirectionsPicker extends Component {
 
     return (
       <div>
-        <div className="buttonholder"><h4><span className="badge badge-info">Meet Up Time</span></h4></div>
-
-        <div className="togglebuttonholder">
-          <DateTimePicker
-            className = "badge badge-light"
-            onChange={(date) => {
-              this.setState({ date });
-              this.props.onSetDate(date);
-            }}
-            value={this.state.date}
-            disableClock={true}
-            yearPlaceholder="yyyy"
-            monthPlaceholder="mm"
-            dayPlaceholder="dd"
-            hourPlaceholder="hh"
-            minutePlaceholder="mm"
-            clearIcon={null}
-          ></DateTimePicker>
-        </div>
-
         <div>
-        <div className="buttonholder"><h4><span className="badge badge-info">Transport Type</span></h4></div>
+          <div className="buttonholder">
+            <h4>
+              <span className="badge badge-info">Transport Type</span>
+            </h4>
+          </div>
 
           <ButtonGroup toggle className="buttonholder">
             {radios.map((radio, idx) => (
               <ToggleButton
-              
                 key={idx}
                 type="radio"
                 variant="secondary"
@@ -63,6 +45,32 @@ class DirectionsPicker extends Component {
               </ToggleButton>
             ))}
           </ButtonGroup>
+        </div>
+
+        <div>
+          <div className="buttonholder">
+            <h4>
+              <span className="badge badge-info">Meet Up Time</span>
+            </h4>
+          </div>
+
+          <div className="togglebuttonholder">
+            <DateTimePicker
+              className="badge badge-light"
+              onChange={(date) => {
+                this.setState({ date });
+                this.props.onSetDate(date);
+              }}
+              value={this.state.date}
+              disableClock={true}
+              yearPlaceholder="yyyy"
+              monthPlaceholder="mm"
+              dayPlaceholder="dd"
+              hourPlaceholder="hh"
+              minutePlaceholder="mm"
+              clearIcon={null}
+            ></DateTimePicker>
+          </div>
         </div>
       </div>
     );

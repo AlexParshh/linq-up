@@ -5,11 +5,11 @@ import fetch from "cross-fetch";
 import MapContainer from "./Map";
 import PlacePicker from "./PlacePicker";
 import DirectionsPicker from "./DirectionsPicker";
-import 'bootstrap/dist/css/bootstrap.css';
-import './styles.css'
-import Axios from 'axios';
-import { Alert, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-const moment = require('moment');
+import "bootstrap/dist/css/bootstrap.css";
+import "./styles.css";
+import Axios from "axios";
+import { Alert, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+const moment = require("moment");
 
 class Application extends Component {
   state = {
@@ -57,25 +57,23 @@ class Application extends Component {
 
     leaveTimes: [],
 
-    emails: ["","",""],
+    emails: ["", "", ""],
 
-    linqupbtnStyle: {display:"none"},
+    linqupbtnStyle: { display: "none" },
 
     modalVisibility: false,
 
     meetupPointName: "",
-
-
   };
 
   handleSetEmail = (e, v) => {
     let newEmails = this.state.emails.slice();
     newEmails[v - 1] = e;
-    this.setState({emails:newEmails})
-  }
+    this.setState({ emails: newEmails });
+  };
 
   componentDidMount() {
-    this.handleSetDate(this.state.date)
+    this.handleSetDate(this.state.date);
     this.setCurrentLocation();
   }
 
@@ -99,16 +97,16 @@ class Application extends Component {
 
   handleAddPerson = () => {
     this.resetMidPoint();
-    let newEmails = [...this.state.emails,""];
+    let newEmails = [...this.state.emails, ""];
     let newAddresses = [...this.state.addresses, ""];
-    this.setState({ addresses: newAddresses,
-    leaveTimes: [],
-    meetupPoint: null,
-    travelTimes: [],
-    nearbyPlaces: {},
-    emails:newEmails,
-
-   });
+    this.setState({
+      addresses: newAddresses,
+      leaveTimes: [],
+      meetupPoint: null,
+      travelTimes: [],
+      nearbyPlaces: {},
+      emails: newEmails,
+    });
     this.setState({
       people: [
         ...this.state.people,
@@ -124,30 +122,30 @@ class Application extends Component {
 
   handleDeletePerson = () => {
     let newcoords = this.state.coords.slice(0, -1);
-    this.setState({ coords: newcoords,
+    this.setState({
+      coords: newcoords,
       leaveTimes: [],
       meetupPoint: null,
       travelTimes: [],
-      nearbyPlaces: {} });
+      nearbyPlaces: {},
+    });
 
     this.resetMidPoint();
     let newEmails = this.state.emails.slice(0, -1);
     let newAddresses = this.state.addresses.slice(0, -1);
-    this.setState({ addresses: newAddresses,
-    emails:newEmails });
+    this.setState({ addresses: newAddresses, emails: newEmails });
     let people = this.state.people.slice(0, -1);
-    this.setState({people});
+    this.setState({ people });
   };
 
   getCoords = async (address) => {
+    let bod = { address: address };
+    const res = await Axios.post("http://localhost:4000/geolocate", bod);
 
-    let bod = {address:address}
-    const res = await Axios.post('http://localhost:4000/geolocate', bod)
-
-    if (res.status!== 200) throw Error(res.body.message);
+    if (res.status !== 200) throw Error(res.body.message);
 
     return res.data;
-  }
+  };
 
   convertToCoords = async () => {
     const all = this.state.addresses;
@@ -156,7 +154,6 @@ class Application extends Component {
     let a;
 
     for (let i = 0; i < all.length; i++) {
-
       a = await this.getCoords(all[i]);
       newCoords.push(a);
     }
@@ -242,37 +239,41 @@ class Application extends Component {
     }
     await this.convertToCoords();
     let midPoint = await this.findMidPoint(this.state.coords);
-    this.setState({ midPoint: midPoint });
-    this.linqupBtnChecker()
+    this.setState({
+      midPoint: midPoint,
+      meetupPoint: { lat: midPoint[0], lng: midPoint[1] },
+    });
+    this.linqupBtnChecker();
     this.findNearbyPlaces();
   };
 
   findNearbyPlaces = async () => {
-
     if (this.state.POI === "") {
       //if no Point of interest selected
-      let newMeetupPoint = {lat:this.state.midPoint[0],lng:this.state.midPoint[1]};
-      this.setState({meetupPoint:newMeetupPoint});
-      return
+      let newMeetupPoint = {
+        lat: this.state.midPoint[0],
+        lng: this.state.midPoint[1],
+      };
+      this.setState({ meetupPoint: newMeetupPoint });
+      return;
     }
 
-    const content = {midPoint:this.state.midPoint,radius:this.state.radius,POI:this.state.POI}
+    const content = {
+      midPoint: this.state.midPoint,
+      radius: this.state.radius,
+      POI: this.state.POI,
+    };
 
-    const res = await Axios.post('http://localhost:4000/nearbyplaces', content)
+    const res = await Axios.post("http://localhost:4000/nearbyplaces", content);
 
-
-    if (res.status!== 200) throw Error(res);
+    if (res.status !== 200) throw Error(res);
 
     if (res.data.status === "ZERO_RESULTS") {
-      return
+      return;
     } else {
-      this.setState({nearbyPlaces: res.data.results});
+      this.setState({ nearbyPlaces: res.data.results });
     }
-
-
-  }
-
-
+  };
 
   resetMidPoint = () => {
     this.setState({ midPoint: [] });
@@ -291,79 +292,71 @@ class Application extends Component {
     }
   };
 
-
   handleSetPOI = (e) => {
     this.setState({ POI: e });
     if (e === "") {
-      this.setState({nearbyPlaces:{}})
+      this.setState({ nearbyPlaces: {} });
     }
   };
 
   getPlaces = () => {
-
     if (this.state.POI === "") {
       return null;
-    } 
-
-  }
+    }
+  };
 
   handleSetRadius = (e) => {
-
-    this.setState({radius:e});
-  }
+    this.setState({ radius: e });
+  };
 
   handleSetTransport = (e) => {
     let l;
-    if (e ==="bike") {
-      l = "bicycling"
-    } else if (e==="car") {
-      l="driving"
-    } else if (e==="walk") {
-      l="walking"
+    if (e === "bike") {
+      l = "bicycling";
+    } else if (e === "car") {
+      l = "driving";
+    } else if (e === "walk") {
+      l = "walking";
     } else {
-      l = "transit"
+      l = "transit";
     }
- 
 
-    this.setState({transportOption:l})
-  }
+    this.setState({ transportOption: l });
+  };
 
   handleSetDate = (date) => {
+    let newDate = moment(date);
+    newDate = newDate.format("LLL");
 
-    let newDate = moment(date)
-    newDate = newDate.format("LLL")
-    
-    this.setState({date:newDate})
-  }
+    this.setState({ date: newDate });
+  };
 
   handleSetMeetupPoint = (loc) => {
-
-    this.setState({meetupPoint:loc})
-  }
+    this.setState({ meetupPoint: loc });
+  };
 
   async getTime(link) {
     const res = await fetch(link);
     const data = await res.json();
 
-    return data.routes[0].legs[0].duration
+    return data.routes[0].legs[0].duration;
   }
 
-
   getTravelTimes = async () => {
-
     if (this.state.meetupPoint === null) {
-      let newMeetupPoint = {lat:this.state.midPoint[0],lng:this.state.midPoint[1]};
-      this.setState({meetupPoint:newMeetupPoint});
-    } 
-    
-    if (this.state.midPoint === "error" || this.state.addresses.length === 0) {
-      return
+      let newMeetupPoint = {
+        lat: this.state.midPoint[0],
+        lng: this.state.midPoint[1],
+      };
+      this.setState({ meetupPoint: newMeetupPoint });
     }
 
+    if (this.state.midPoint === "error" || this.state.addresses.length === 0) {
+      return;
+    }
 
-    let targetLat=this.state.meetupPoint.lat
-    let targetLon=this.state.meetupPoint.lng
-
+    let targetLat = this.state.meetupPoint.lat;
+    let targetLon = this.state.meetupPoint.lng;
 
     let travelTimes = [];
 
@@ -371,145 +364,148 @@ class Application extends Component {
 
     if (this.state.transportOption === null) {
       //defaults to driving if nothing was selected
-      travelMode = "driving"
+      travelMode = "driving";
     } else {
       travelMode = this.state.transportOption;
     }
 
-    
-    for (let i =0;i<this.state.coords.length;i++){
+    for (let i = 0; i < this.state.coords.length; i++) {
+      originLat = this.state.coords[i].lat;
+      originLon = this.state.coords[i].lng;
 
-      originLat = this.state.coords[i].lat
-      originLon = this.state.coords[i].lng
+      content = {
+        targetLat: targetLat,
+        targetLon: targetLon,
+        originLat: originLat,
+        originLon: originLon,
+        travelMode: travelMode,
+      };
 
-      content = {targetLat:targetLat, targetLon:targetLon, originLat:originLat, originLon:originLon, travelMode:travelMode };
+      time = await Axios.post("http://localhost:4000/traveltime", content);
 
-      time = await Axios.post('http://localhost:4000/traveltime',content)
-
-      travelTimes.push(time.data.routes[0].legs[0].duration)
+      travelTimes.push(time.data.routes[0].legs[0].duration);
     }
 
+    this.setState({ travelTimes });
 
-    this.setState({travelTimes})
+    this.getLeaveTimes();
+  };
 
-    this.getLeaveTimes()
-
-  }
-  
   getLeaveTimes = () => {
-
     let travelTimes = this.state.travelTimes;
     let arrivalTime = moment(this.state.date);
     let leaveTimes = [];
 
     let current;
 
-    for (let i =0; i<travelTimes.length;i++) {
+    for (let i = 0; i < travelTimes.length; i++) {
       current = arrivalTime.clone().subtract(travelTimes[i].value, "seconds");
-      current = current.format("LLL")
-      leaveTimes.push(current)
-
+      current = current.format("LLL");
+      leaveTimes.push(current);
     }
 
-   
-
-    this.setState({leaveTimes})
-
-  }
-
+    this.setState({ leaveTimes });
+  };
 
   sendEmails = () => {
-
     let emails = this.state.emails;
     let leaveTimes = this.state.leaveTimes;
     let coords = this.state.coords;
     let meetupPoint = this.state.meetupPoint;
 
-    let text,email,content;
+    let text, email, content;
 
-    for (let i = 0; i<leaveTimes.length;i++) {
-      text = "This is a reminder to linq up!\nIn order to arrive at the linq up point, please depart at the following time:\n";
-      text+=(leaveTimes[i]+"\n");
-      text+="The directions to your destination can be found using this link\n";
-      text+=("https://www.google.com/maps/dir/"+coords[i].lat+","+coords[i].lng+"/"+meetupPoint.lat+","+meetupPoint.lng+"/")
-      
-      email = emails[i]
+    for (let i = 0; i < leaveTimes.length; i++) {
+      text =
+        "This is a reminder to linq up!\nIn order to arrive at the linq up point, please depart at the following time:\n";
+      text += leaveTimes[i] + "\n";
+      text +=
+        "The directions to your destination can be found using this link\n";
+      text +=
+        "https://www.google.com/maps/dir/" +
+        coords[i].lat +
+        "," +
+        coords[i].lng +
+        "/" +
+        meetupPoint.lat +
+        "," +
+        meetupPoint.lng +
+        "/";
 
-      content = {to:email,text:text}
-      Axios.post('http://localhost:4000/sendemail', content)
+      email = emails[i];
 
+      content = { to: email, text: text };
+      Axios.post("http://localhost:4000/sendemail", content);
     }
-
-  }
+  };
 
   linqupBtnChecker = () => {
-
     let emails = this.state.emails;
-    const newStyle = {display:"inline"};
+    const newStyle = { display: "inline" };
     let valid = true;
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     //validating all emails before displaying linq up button to prevent email errors
-    for (let i = 0;i<emails.length;i++) {
+    for (let i = 0; i < emails.length; i++) {
       if (!re.test(String(emails[i]).toLowerCase())) {
         valid = false;
       }
-
     }
-
 
     if (valid) {
-      this.setState({linqupbtnStyle:newStyle});
+      this.setState({ linqupbtnStyle: newStyle });
     }
-
-  }
+  };
 
   showModal = () => {
-    this.setState({modalVisibility:true})
-  }
+    this.setState({ modalVisibility: true });
+  };
 
   hideModal = () => {
-    this.setState({modalVisibility:false})
-  }
+    this.setState({ modalVisibility: false });
+  };
 
   handleSetMeetName = (name) => {
-    this.setState({meetupPointName:name});
-  }
-  
+    this.setState({ meetupPointName: name });
+  };
 
   render() {
-
-    let time, meetupPoint;
+    let time = this.state.date;
+    let meetupPoint;
 
     if (this.state.meetupPoint) {
-
       if (this.state.meetupPointName !== "") {
         meetupPoint = this.state.meetupPointName;
       } else {
-        meetupPoint = [this.state.meetupPoint.lat,this.state.meetupPoint.lng].toString();
-        time = this.state.date.toString();
+        meetupPoint = [
+          this.state.meetupPoint.lat,
+          this.state.meetupPoint.lng,
+        ].toString();
       }
     }
 
     return (
-      <div>
-        <div className="jumbotron">
-          <h1 className="display-3">Linq up</h1>
+      <div className="app">
+        <div className="banner">
+          <div className="jumbotron">
+            <h1 className="display-3">Linq up</h1>
           </div>
-          
-        <div>
-          <PlacePicker 
-          onSetRadius={(e) => this.handleSetRadius(e)}
-          onSetPOI={(e) => this.handleSetPOI(e)}></PlacePicker>
         </div>
 
-        <div>
+        <div className="placepicker">
+          <PlacePicker
+            onSetRadius={(e) => this.handleSetRadius(e)}
+            onSetPOI={(e) => this.handleSetPOI(e)}
+          ></PlacePicker>
+        </div>
+
+        <div className="directionspicker">
           <DirectionsPicker
-          onSetTransport={(e) => this.handleSetTransport(e)}
-          onSetDate = {(date) => this.handleSetDate(date)}
+            onSetTransport={(e) => this.handleSetTransport(e)}
+            onSetDate={(date) => this.handleSetDate(date)}
           ></DirectionsPicker>
         </div>
-        
-        <div>
+
+        <div className="personlist">
           <PersonList
             people={this.state.people}
             onAddPerson={() => this.handleAddPerson()}
@@ -517,33 +513,53 @@ class Application extends Component {
           ></PersonList>
         </div>
 
-        <div className="buttonholder">
-          <button className="btn btn-outline-secondary" onClick={this.calculator}>Calculate</button>
+        <div className="buttons">
+          <div className="buttonholder">
+            <button
+              className="btn btn-outline-secondary"
+              onClick={this.calculator}
+            >
+              Calculate
+            </button>
+          </div>
+
+          <div className="buttonholder">
+            <button
+              style={this.state.linqupbtnStyle}
+              className="btn btn-outline-dark"
+              onClick={() => {
+                this.getTravelTimes();
+                this.showModal();
+              }}
+            >
+              Linq up!
+            </button>
+          </div>
         </div>
 
-        <div className="buttonholder"><button style={this.state.linqupbtnStyle} className="btn btn-outline-warning" onClick={() => {
-          this.getTravelTimes();
-          this.showModal();
-        }}>Linq up!</button></div>
-
-        <Modal centered={true}isOpen={this.state.modalVisibility}>
-        <ModalHeader>
-          Linq up Confirmation
-        </ModalHeader>
-        <ModalBody>
-          <Alert color="warning">Linq up Time: {time}</Alert>
-          <Alert color="warning">Linq up Place: {meetupPoint}</Alert>
-        </ModalBody>
-        <ModalFooter>
-          <button className="btn btn-danger" onClick={this.hideModal}>Cancel</button>
-          <button className="btn btn-success" onClick={() => {
-            this.hideModal();
-            this.sendEmails();
-          }}>Proceed</button>
-        </ModalFooter>
+        <Modal centered={true} isOpen={this.state.modalVisibility}>
+          <ModalHeader>Linq up Confirmation</ModalHeader>
+          <ModalBody>
+            <Alert color="warning">Linq up Time: {time}</Alert>
+            <Alert color="warning">Linq up Place: {meetupPoint}</Alert>
+          </ModalBody>
+          <ModalFooter>
+            <button className="btn btn-danger" onClick={this.hideModal}>
+              Cancel
+            </button>
+            <button
+              className="btn btn-success"
+              onClick={() => {
+                this.hideModal();
+                this.sendEmails();
+              }}
+            >
+              Proceed
+            </button>
+          </ModalFooter>
         </Modal>
 
-        <div>
+        <div className="map">
           <MapContainer
             POI={this.state.POI}
             addresses={this.state.addresses}
@@ -556,7 +572,6 @@ class Application extends Component {
             onSetMeetName={(name) => this.handleSetMeetName(name)}
           ></MapContainer>
         </div>
-
       </div>
     );
   }

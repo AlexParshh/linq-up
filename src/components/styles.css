@@ -1,22 +1,62 @@
 .holder {
-    overflow-y: scroll;
-    height: 390px;
-    width: 430px;
+  overflow-y: scroll;
+  height: 390px;
+  width: 430px;
 }
 
 .buttonholder {
-    text-align: center;
-    width: 430px;
-    margin: 5px;
-
+  text-align: center;
+  width: 430px;
+  margin: 5px;
 }
 
 .togglebuttonholder {
-    margin: 5px;
-    width: 430px;
-    text-align: center;
+  margin: 5px;
+  width: 430px;
+  text-align: center;
 }
 
-.timepicker {
-    background: lightblue;
+.app {
+  display: grid;
+  grid-row-gap: 0px;
+  grid-column-gap: 30px;
+  grid-template-rows: 250px 150px 175px 450px [main-start];
+  grid-template-columns: 450px [main-start];
+}
+
+.banner {
+  grid-column-start: 1;
+  grid-column-end: 1;
+}
+
+.map {
+  grid-column-start: 2;
+  grid-column-end: 5;
+  grid-row-start: 1;
+  grid-row-end: 5;
+  margin-top: 0px;
+}
+
+.placepicker {
+  grid-column: 1;
+  grid-row: 2;
+  background-color: lightblue;
+}
+
+.directionspicker {
+  grid-column: 1;
+  grid-row: 3;
+  background-color: lightblue;
+}
+
+.personlist {
+  grid-column: 1;
+  grid-row: 4;
+  background-color: lightblue;
+}
+
+.buttons {
+  grid-column: 1;
+  grid-row: 5;
+  background-color: lightblue;
 }

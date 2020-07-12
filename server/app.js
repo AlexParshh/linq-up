@@ -86,7 +86,7 @@ app.post("/traveltime", (req, res) => {
 });
 
 app.post("/sendemail", (req, res, next) => {
-  sendGrid.setApiKey(process.env.SEND_GRID_API_KEY);
+  sendGrid.setApiKey(process.env.SENDGRID_API_KEY);
   const msg = {
     to: req.body.to,
     from: "linqup.reminder@gmail.com",

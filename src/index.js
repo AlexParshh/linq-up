@@ -1,7 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import * as serviceWorker from "./serviceWorker";
 import Application from "./components/Application";
 
 ReactDOM.render(
@@ -10,4 +8,4 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-serviceWorker.unregister();
+

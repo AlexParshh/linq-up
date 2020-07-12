@@ -9,12 +9,21 @@ import {
 require("dotenv").config();
 
 export class MapContainer extends Component {
+
   state = {
     showingInfoWindow: false,
     activeMarker: {},
     selectedPlace: {},
     currentPhoto: "",
+    circleLat: this.props.circleLat,
+    circleLng: this.props.circleLng,
   };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.circleLat !== this.state.circleLat) {
+      this.setState({circleLat: this.props.circleLat,circleLng:this.props.circleLng})
+    }
+  }
 
   displayMarkers = () => {
     return this.props.coords.map((address, index) => {
@@ -47,12 +56,22 @@ export class MapContainer extends Component {
       coordsPlaces.push(this.props.nearbyPlaces[i].geometry.location);
       placesNames.push(this.props.nearbyPlaces[i].name);
       ratings.push(this.props.nearbyPlaces[i].rating);
-      photos.push(
-        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&photoreference=" +
-          this.props.nearbyPlaces[i].photos[0].photo_reference +
-          "&key=" +
-          process.env.REACT_APP_GOOGLE_MAPS_API_KEY
-      );
+
+      //if this.props.nearbyPlaces.photos[0]
+      console.log(this.props.nearbyPlaces[i])
+
+
+      //handles no photo error
+      if (this.props.nearbyPlaces[i].photos) {
+        photos.push(
+          "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&photoreference=" +
+            this.props.nearbyPlaces[i].photos[0].photo_reference +
+            "&key=" +
+            process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+        );
+      } else {
+        photos.push("https://static.thenounproject.com/png/1339059-200.png");
+      }
     }
 
     return coordsPlaces.map((address, index) => {
@@ -117,6 +136,8 @@ export class MapContainer extends Component {
     }
   }
 
+
+
   render() {
     return (
       <div>
@@ -125,7 +146,7 @@ export class MapContainer extends Component {
           zoom={12}
           style={{
             width: "65.8%",
-            height: "108%",
+            height: "97%",
           }}
           initialCenter={{
             lat: this.props.currentLocation[0],
@@ -165,14 +186,8 @@ export class MapContainer extends Component {
           <Circle
             radius={parseInt(this.props.radius) * 1.7}
             center={{
-              lat:
-                this.props.midpoint[0] === ""
-                  ? 0
-                  : parseFloat(this.props.midpoint[0]),
-              lng:
-                this.props.midpoint[0] === ""
-                  ? 0
-                  : parseFloat(this.props.midpoint[1]),
+              lat: this.state.circleLat,
+              lng: this.state.circleLng,
             }}
             strokeColor="transparent"
             strokeOpacity={0}
@@ -191,10 +206,7 @@ export class MapContainer extends Component {
               {this.state.selectedPlace.name}
               {this.state.activeMarker.id === "place" ? (
                 <div>
-                  <img
-                    src={this.state.activeMarker.photo}
-                    alt="https://bitsofco.de/content/images/2018/12/Screenshot-2018-12-16-at-21.06.29.png"
-                  ></img>
+                  <img src={this.state.activeMarker.photo} alt="Image Unavailable"></img>
                   <h4>Rating: {this.state.activeMarker.rating}</h4>
                 </div>
               ) : (

@@ -64,6 +64,11 @@ class Application extends Component {
     modalVisibility: false,
 
     meetupPointName: "",
+
+    circleLat: 0,
+
+    circleLng: 0,
+
   };
 
   handleSetEmail = (e, v) => {
@@ -242,6 +247,7 @@ class Application extends Component {
     this.setState({
       midPoint: midPoint,
       meetupPoint: { lat: midPoint[0], lng: midPoint[1] },
+      circleLat: midPoint[0], circleLng:midPoint[1]
     });
     this.linqupBtnChecker();
     this.findNearbyPlaces();
@@ -561,6 +567,8 @@ class Application extends Component {
 
         <div className="map">
           <MapContainer
+            circleLat={this.state.circleLat}
+            circleLng={this.state.circleLng}
             POI={this.state.POI}
             addresses={this.state.addresses}
             currentLocation={this.state.currentLocation}

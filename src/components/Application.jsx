@@ -45,7 +45,7 @@ class Application extends Component {
 
     radius: "300",
 
-    nearbyPlaces: {},
+    nearbyPlaces: "",
 
     transportOption: null,
 
@@ -110,7 +110,7 @@ class Application extends Component {
       leaveTimes: [],
       meetupPoint: null,
       travelTimes: [],
-      nearbyPlaces: {},
+      nearbyPlaces: "",
       emails: newEmails,
       circleLat:0,
       circleLng:0,
@@ -136,7 +136,7 @@ class Application extends Component {
       leaveTimes: [],
       meetupPoint: null,
       travelTimes: [],
-      nearbyPlaces: {},
+      nearbyPlaces: "",
       circleLat:0,
       circleLng:0,
       coords:[]
@@ -152,7 +152,7 @@ class Application extends Component {
 
   getCoords = async (address) => {
     let bod = { address: address };
-    const res = await Axios.post("http://localhost:4000/geolocate", bod);
+    const res = await Axios.post("/geolocate", bod);
 
     if (res.status !== 200) throw Error(res.body.message);
 
@@ -277,7 +277,7 @@ class Application extends Component {
       POI: this.state.POI,
     };
 
-    const res = await Axios.post("http://localhost:4000/nearbyplaces", content);
+    const res = await Axios.post("/nearbyplaces", content);
 
     if (res.status !== 200) throw Error(res);
 
@@ -308,7 +308,7 @@ class Application extends Component {
   handleSetPOI = (e) => {
     this.setState({ POI: e });
     if (e === "") {
-      this.setState({ nearbyPlaces: {} });
+      this.setState({ nearbyPlaces: "" });
     }
   };
 
@@ -394,7 +394,7 @@ class Application extends Component {
         travelMode: travelMode,
       };
 
-      time = await Axios.post("http://localhost:4000/traveltime", content);
+      time = await Axios.post("/traveltime", content);
 
       travelTimes.push(time.data.routes[0].legs[0].duration);
     }
@@ -448,7 +448,7 @@ class Application extends Component {
       email = emails[i];
 
       content = { to: email, text: text };
-      Axios.post("http://localhost:4000/sendemail", content);
+      Axios.post("/sendemail", content);
     }
   };
 

@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const app = express();
 const mapsKey = process.env.GOOGLE_MAPS_API_KEY;
+const port = process.env.PORT || 4000;
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -109,4 +110,4 @@ app.post("/sendemail", (req, res, next) => {
     });
 });
 
-app.listen(4000, () => console.log("Running on Port 4000"));
+app.listen(port, () => console.log("Running on Port 4000"));

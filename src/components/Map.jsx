@@ -138,6 +138,8 @@ export class MapContainer extends Component {
 
 
   render() {
+
+  
     return (
       <div>
         <Map
@@ -193,7 +195,7 @@ export class MapContainer extends Component {
             strokeWeight={5}
             fillColor="#FF0000"
             fillOpacity={0.2}
-            visible={Boolean(this.props.circleLat)}
+            visible={Boolean(this.props.nearbyPlaces)}
           ></Circle>
 
           <InfoWindow

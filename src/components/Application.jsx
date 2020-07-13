@@ -69,6 +69,7 @@ class Application extends Component {
 
     circleLng: 0,
 
+
   };
 
   handleSetEmail = (e, v) => {
@@ -111,6 +112,9 @@ class Application extends Component {
       travelTimes: [],
       nearbyPlaces: {},
       emails: newEmails,
+      circleLat:0,
+      circleLng:0,
+      coords:[]
     });
     this.setState({
       people: [
@@ -133,6 +137,9 @@ class Application extends Component {
       meetupPoint: null,
       travelTimes: [],
       nearbyPlaces: {},
+      circleLat:0,
+      circleLng:0,
+      coords:[]
     });
 
     this.resetMidPoint();
@@ -566,6 +573,7 @@ class Application extends Component {
         </Modal>
 
         <div className="map">
+          <p className="badge badge-secondary">Press Ctrl+r if map did not load</p>
           <MapContainer
             circleLat={this.state.circleLat}
             circleLng={this.state.circleLng}

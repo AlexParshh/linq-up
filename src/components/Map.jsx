@@ -58,7 +58,6 @@ export class MapContainer extends Component {
       ratings.push(this.props.nearbyPlaces[i].rating);
 
       //if this.props.nearbyPlaces.photos[0]
-      console.log(this.props.nearbyPlaces[i])
 
 
       //handles no photo error
@@ -194,7 +193,7 @@ export class MapContainer extends Component {
             strokeWeight={5}
             fillColor="#FF0000"
             fillOpacity={0.2}
-            visible={this.props.POI === "" ? false : true}
+            visible={Boolean(this.props.circleLat)}
           ></Circle>
 
           <InfoWindow
@@ -224,4 +223,4 @@ export default GoogleApiWrapper({
   apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
 })(MapContainer);
 
-//console.log(this.state.activeMarker.pos)
+

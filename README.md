@@ -43,7 +43,7 @@ https://linqup.herokuapp.com
 ## Photos ##
 
 ![picture alt](https://i.gyazo.com/a2cdb38fcb6f4232a183022726a9da44.png)
-![picture alt](https://i.gyazo.com/a2cdb38fcb6f4232a183022726a9da44.png)
+![picture alt](https://i.gyazo.com/a1224a1263c4c6468ab2cdc31797d60c.png)
 ![picture alt](https://cdn.discordapp.com/attachments/422579332033282059/732471173429854238/Screenshot_20200714-013839_Gmail.jpg)
 
 

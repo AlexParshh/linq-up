@@ -26,6 +26,8 @@ Linq up primarily uses the Google Maps API. Below are all the API's used:
 
 ## Usage ##
 
+Google Chrome is optimal for this app. When accessing the link, be sure to use https:// before the link and allow the app to use your current location. Otherwise it will not work.
+
 In order to use Linq up, input at least 2 addresses and press the "Calculate" button, this will return the geographical midpoint, which will be displayed on the map.
 
 To get nearby places of that midpoint, configure a radius size and input a point of interest keyword such as "restaurant" or "grocery store". All the nearby places will be displayed within the selected radius of the midpoint.
@@ -33,6 +35,16 @@ To get nearby places of that midpoint, configure a radius size and input a point
 To setup an email reminder on where to meet up aswell as leave times for each person, select a marker on the map and then press the "Linq up" button which will appear after the "Calculate" button was initially pressed. The "Linq up" button will only appear if each address has an email, and a meet up time has been selected, as well as transport type which determines the leave time for each person.
 
 TLDR: Pick a POI, Radius, Transport Type, Meet up Time, add at least 2 addresses and emails. Press "Calculate", select a meet up point by clicking a marker on the map. Then press "Linq up" and confirm the meeting details.
+
+## Try it out ##
+
+https://linqup.herokuapp.com
+
+## Photos ##
+
+![picture alt](https://i.gyazo.com/a2cdb38fcb6f4232a183022726a9da44.png)
+![picture alt](https://cdn.discordapp.com/attachments/422579332033282059/732471173429854238/Screenshot_20200714-013839_Gmail.jpg)
+
 
 
 

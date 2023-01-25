@@ -36,10 +36,6 @@ To setup an email reminder on where to meet up aswell as leave times for each pe
 
 TLDR: Pick a POI, Radius, Transport Type, Meet up Time, add at least 2 addresses and emails. Press "Calculate", select a meet up point by clicking a marker on the map. Then press "Linq up" and confirm the meeting details.
 
-## Try it out ##
-
-https://linqup.herokuapp.com
-
 ## Photos ##
 
 ![picture alt](https://i.gyazo.com/a2cdb38fcb6f4232a183022726a9da44.png)
